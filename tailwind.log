@@ -1,0 +1,432 @@
+﻿node.exe : Browserslist: caniuse-lite is outdated. 
+Please run:
+En C:\Users\Fernando\AppData\Roaming\npm\npx.ps1: 
+24 Carácter: 5
++     & "node$exe"  
+"$basedir/node_modules/npm/bin/npx-cli.js" $args
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: 
+(Browsersli    st: c...ed. Please run::String) [], 
+RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  npx update-browserslist-db@latest
+  Why you should do it regularly: 
+https://github.com/browserslist/update-db#readme
+
+Rebuilding...
+CssSyntaxError: tailwindcss: 
+C:\Users\Fernando\PITCH 
+26\src\app\globals.css:92:16: The `bg-purple-500` 
+class does not exist. If `bg-purple-500` is a 
+custom class, make sure it is defined within a 
+`@layer` directive.
+    at Input.error (C:\Users\Fernando\PITCH 
+26\node_modules\postcss\lib\input.js:135:16)
+    at AtRule.error (C:\Users\Fernando\PITCH 
+26\node_modules\postcss\lib\node.js:146:32)
+    at processApply (C:\Users\Fernando\PITCH 26\node
+_modules\tailwindcss\lib\lib\expandApplyAtRules.js:3
+80:29)
+    at C:\Users\Fernando\PITCH 26\node_modules\tailw
+indcss\lib\lib\expandApplyAtRules.js:551:9
+    at C:\Users\Fernando\PITCH 26\node_modules\tailw
+indcss\lib\processTailwindFeatures.js:55:50
+    at async Object.Once (C:\Users\Fernando\PITCH 26
+\node_modules\tailwindcss\lib\cli\build\plugin.js:24
+8:17)
+    at async LazyResult.runAsync 
+(C:\Users\Fernando\PITCH 
+26\node_modules\postcss\lib\lazy-result.js:293:11)
+    at async build (C:\Users\Fernando\PITCH 26\node_
+modules\tailwindcss\lib\cli\build\index.js:49:9) {
+  reason: 'The `bg-purple-500` class does not 
+exist. If `bg-purple-500` is a custom class, make 
+sure it is defined within a `@layer` directive.',
+  file: 'C:\\Users\\Fernando\\PITCH 
+26\\src\\app\\globals.css',
+  source: '@tailwind base;\n' +
+    '@tailwind components;\n' +
+    '@tailwind utilities;\n' +
+    '\n' +
+    ':root {\n' +
+    '  --void: #060A12;\n' +
+    '  --deep: #0D1826;\n' +
+    '  --panel: #111C2E;\n' +
+    '  --rim: #1A2B40;\n' +
+    '  --gold: #F0C040;\n' +
+    '  --gold-dark: #E07820;\n' +
+    '  --fire: #FF4D1A;\n' +
+    '  --ice: #38D9F5;\n' +
+    '  --emerald: #00E5A0;\n' +
+    '  --purple: #9D6FFF;\n' +
+    '  --txt: #EAE6DA;\n' +
+    '  --txt2: rgba(234, 230, 218, 0.45);\n' +
+    '}\n' +
+    '\n' +
+    'body {\n' +
+    '  background-color: var(--void);\n' +
+    '  color: var(--txt);\n' +
+    '  font-family: var(--font-barlow), 
+sans-serif;\n' +
+    '  -webkit-font-smoothing: antialiased;\n' +
+    '  -moz-osx-font-smoothing: grayscale;\n' +
+    '}\n' +
+    '\n' +
+    '.bg-mesh {\n' +
+    '  position: fixed;\n' +
+    '  inset: 0;\n' +
+    "  background-image: 
+url('/hex-pattern.svg');\n" +
+    '  background-size: 60px;\n' +
+    '  background-repeat: repeat;\n' +
+    '  opacity: 0.035;\n' +
+    '  pointer-events: none;\n' +
+    '  z-index: -1;\n' +
+    '}\n' +
+    '\n' +
+    '.bg-gradients {\n' +
+    '  position: fixed;\n' +
+    '  inset: 0;\n' +
+    '  background: \n' +
+    '    radial-gradient(circle at 20% 30%, 
+rgba(240, 192, 64, 0.05) 0%, transparent 40%),\n' +
+    '    radial-gradient(circle at 80% 70%, 
+rgba(255, 77, 26, 0.04) 0%, transparent 40%),\n' +
+    '    radial-gradient(circle at 50% 10%, 
+rgba(56, 217, 245, 0.03) 0%, transparent 50%);\n' +
+    '  pointer-events: none;\n' +
+    '  z-index: -2;\n' +
+    '}\n' +
+    '\n' +
+    '@layer components {\n' +
+    '  .pcard {\n' +
+    '    @apply relative w-64 h-96 rounded-xl 
+overflow-hidden cursor-pointer transition-transform 
+ease-out duration-300 transform hover:scale-105;\n' 
++
+    '    background: var(--panel);\n' +
+    '    border: 1px solid var(--rim);\n' +
+    '    box-shadow: 0 8px 32px rgba(0,0,0,0.5);\n' 
++
+    '  }\n' +
+    '\n' +
+    '  .pcard-shine {\n' +
+    '    @apply absolute inset-0 
+pointer-events-none opacity-0 transition-opacity 
+duration-300;\n' +
+    '    background: linear-gradient(125deg, 
+rgba(255,255,255,0.3) 0%, transparent 40%, 
+transparent 60%, rgba(255,255,255,0.1) 100%);\n' +
+    '  }\n' +
+    '\n' +
+    '  .pcard:hover .pcard-shine {\n' +
+    '    @apply opacity-100;\n' +
+    '  }\n' +
+    '\n' +
+    '  .pcard-tb {\n' +
+    '    @apply absolute top-0 left-0 right-0 
+h-1;\n' +
+    '  }\n' +
+    '\n' +
+    '  .tb-gold { background: linear-gradient(to 
+right, #F0C040, #FFD700); }\n' +
+    '  .tb-silver { background: linear-gradient(to 
+right, #9ca3af, #e5e7eb); }\n' +
+    '  .tb-purple { background: linear-gradient(to 
+right, #a855f7, #c084fc); }\n' +
+    '  .tb-teal { background: linear-gradient(to 
+right, #0d9488, #2dd4bf); }\n' +
+    '  .tb-base { background: linear-gradient(to 
+right, #4b5563, #9ca3af); }\n' +
+    '\n' +
+    '  .pcard-head {\n' +
+    '    @apply relative h-[60%] flex flex-col 
+items-center justify-end pb-4;\n' +
+    '    background: linear-gradient(to bottom, 
+transparent 0%, var(--panel) 100%);\n' +
+    '  }\n' +
+    '\n' +
+    '  .pcard-glow {\n' +
+    '    @apply absolute inset-0 opacity-40 
+mix-blend-screen;\n' +
+    '  }\n' +
+    '\n' +
+    '  .pcard-tier {\n' +
+    '    @apply absolute top-3 left-3 text-[10px] 
+font-bold tracking-widest px-2 py-0.5 
+rounded-sm;\n' +
+    '  }\n' +
+    '  \n' +
+    '  .pt-legend { @apply bg-yellow-500 
+text-black; }\n' +
+    '  .pt-elite { @apply bg-gray-300 text-black; 
+}\n' +
+    '  .pt-moment { @apply bg-purple-500 
+text-white; }\n' +
+    '  .pt-rising { @apply bg-teal-400 text-black; 
+}\n' +
+    '  .pt-base { @apply bg-gray-600 text-white; 
+}\n' +
+    '\n' +
+    '  .pcard-rating {\n' +
+    '    @apply absolute top-2 right-3 text-4xl 
+font-display leading-none text-white 
+drop-shadow-md;\n' +
+    '  }\n' +
+    '\n' +
+    '  .pcard-flag {\n' +
+    '    @apply absolute top-12 right-4 
+text-2xl;\n' +
+    '  }\n' +
+    '\n' +
+    '  .live-badge-card {\n' +
+    '    @apply absolute top-3 right-16 text-xs 
+text-fire font-bold animate-pulse flex items-center 
+gap-1;\n' +
+    '  }\n' +
+    '\n' +
+    '  .pcard-body {\n' +
+    '    @apply h-[40%] bg-deep flex flex-col 
+p-4;\n' +
+    '  }\n' +
+    '\n' +
+    '  .evo-tag {\n' +
+    '    @apply self-start text-xs font-bold 
+text-emerald mb-1;\n' +
+    '  }\n' +
+    '  .evo-tag.neg {\n' +
+    '    @apply text-red-500;\n' +
+    '  }\n' +
+    '\n' +
+    '  .pcard-name {\n' +
+    '    @apply text-xl font-display font-black 
+uppercase tracking-tight truncate leading-tight 
+mb-1;\n' +
+    '  }\n' +
+    '\n' +
+    '  .pcard-pos {\n' +
+    '    @apply text-sm text-txt2 font-mono 
+mb-3;\n' +
+    '  }\n' +
+    '\n' +
+    '  .pcard-stats {\n' +
+    '    @apply flex gap-4 w-full;\n' +
+    '  }\n' +
+    '\n' +
+    '  .pstat {\n' +
+    '    @apply flex flex-col items-center;\n' +
+    '  }\n' +
+    '\n' +
+    '  .pstat-v {\n' +
+    '    @apply text-lg font-display 
+leading-none;\n' +
+    '  }\n' +
+    '\n' +
+    '  .pstat-k {\n' +
+    '    @apply text-[10px] text-txt2 font-mono 
+mt-1;\n' +
+    '  }\n' +
+    '}\n',
+  line: 92,
+  column: 16,
+  endLine: 92,
+  endColumn: 48,
+  input: {
+    column: 16,
+    endColumn: 48,
+    endLine: 92,
+    endOffset: 2605,
+    line: 92,
+    offset: 2573,
+    source: '@tailwind base;\n' +
+      '@tailwind components;\n' +
+      '@tailwind utilities;\n' +
+      '\n' +
+      ':root {\n' +
+      '  --void: #060A12;\n' +
+      '  --deep: #0D1826;\n' +
+      '  --panel: #111C2E;\n' +
+      '  --rim: #1A2B40;\n' +
+      '  --gold: #F0C040;\n' +
+      '  --gold-dark: #E07820;\n' +
+      '  --fire: #FF4D1A;\n' +
+      '  --ice: #38D9F5;\n' +
+      '  --emerald: #00E5A0;\n' +
+      '  --purple: #9D6FFF;\n' +
+      '  --txt: #EAE6DA;\n' +
+      '  --txt2: rgba(234, 230, 218, 0.45);\n' +
+      '}\n' +
+      '\n' +
+      'body {\n' +
+      '  background-color: var(--void);\n' +
+      '  color: var(--txt);\n' +
+      '  font-family: var(--font-barlow), 
+sans-serif;\n' +
+      '  -webkit-font-smoothing: antialiased;\n' +
+      '  -moz-osx-font-smoothing: grayscale;\n' +
+      '}\n' +
+      '\n' +
+      '.bg-mesh {\n' +
+      '  position: fixed;\n' +
+      '  inset: 0;\n' +
+      "  background-image: 
+url('/hex-pattern.svg');\n" +
+      '  background-size: 60px;\n' +
+      '  background-repeat: repeat;\n' +
+      '  opacity: 0.035;\n' +
+      '  pointer-events: none;\n' +
+      '  z-index: -1;\n' +
+      '}\n' +
+      '\n' +
+      '.bg-gradients {\n' +
+      '  position: fixed;\n' +
+      '  inset: 0;\n' +
+      '  background: \n' +
+      '    radial-gradient(circle at 20% 30%, 
+rgba(240, 192, 64, 0.05) 0%, transparent 40%),\n' +
+      '    radial-gradient(circle at 80% 70%, 
+rgba(255, 77, 26, 0.04) 0%, transparent 40%),\n' +
+      '    radial-gradient(circle at 50% 10%, 
+rgba(56, 217, 245, 0.03) 0%, transparent 50%);\n' +
+      '  pointer-events: none;\n' +
+      '  z-index: -2;\n' +
+      '}\n' +
+      '\n' +
+      '@layer components {\n' +
+      '  .pcard {\n' +
+      '    @apply relative w-64 h-96 rounded-xl 
+overflow-hidden cursor-pointer transition-transform 
+ease-out duration-300 transform hover:scale-105;\n' 
++
+      '    background: var(--panel);\n' +
+      '    border: 1px solid var(--rim);\n' +
+      '    box-shadow: 0 8px 32px 
+rgba(0,0,0,0.5);\n' +
+      '  }\n' +
+      '\n' +
+      '  .pcard-shine {\n' +
+      '    @apply absolute inset-0 
+pointer-events-none opacity-0 transition-opacity 
+duration-300;\n' +
+      '    background: linear-gradient(125deg, 
+rgba(255,255,255,0.3) 0%, transparent 40%, 
+transparent 60%, rgba(255,255,255,0.1) 100%);\n' +
+      '  }\n' +
+      '\n' +
+      '  .pcard:hover .pcard-shine {\n' +
+      '    @apply opacity-100;\n' +
+      '  }\n' +
+      '\n' +
+      '  .pcard-tb {\n' +
+      '    @apply absolute top-0 left-0 right-0 
+h-1;\n' +
+      '  }\n' +
+      '\n' +
+      '  .tb-gold { background: linear-gradient(to 
+right, #F0C040, #FFD700); }\n' +
+      '  .tb-silver { background: 
+linear-gradient(to right, #9ca3af, #e5e7eb); }\n' +
+      '  .tb-purple { background: 
+linear-gradient(to right, #a855f7, #c084fc); }\n' +
+      '  .tb-teal { background: linear-gradient(to 
+right, #0d9488, #2dd4bf); }\n' +
+      '  .tb-base { background: linear-gradient(to 
+right, #4b5563, #9ca3af); }\n' +
+      '\n' +
+      '  .pcard-head {\n' +
+      '    @apply relative h-[60%] flex flex-col 
+items-center justify-end pb-4;\n' +
+      '    background: linear-gradient(to bottom, 
+transparent 0%, var(--panel) 100%);\n' +
+      '  }\n' +
+      '\n' +
+      '  .pcard-glow {\n' +
+      '    @apply absolute inset-0 opacity-40 
+mix-blend-screen;\n' +
+      '  }\n' +
+      '\n' +
+      '  .pcard-tier {\n' +
+      '    @apply absolute top-3 left-3 text-[10px] 
+font-bold tracking-widest px-2 py-0.5 
+rounded-sm;\n' +
+      '  }\n' +
+      '  \n' +
+      '  .pt-legend { @apply bg-yellow-500 
+text-black; }\n' +
+      '  .pt-elite { @apply bg-gray-300 text-black; 
+}\n' +
+      '  .pt-moment { @apply bg-purple-500 
+text-white; }\n' +
+      '  .pt-rising { @apply bg-teal-400 
+text-black; }\n' +
+      '  .pt-base { @apply bg-gray-600 text-white; 
+}\n' +
+      '\n' +
+      '  .pcard-rating {\n' +
+      '    @apply absolute top-2 right-3 text-4xl 
+font-display leading-none text-white 
+drop-shadow-md;\n' +
+      '  }\n' +
+      '\n' +
+      '  .pcard-flag {\n' +
+      '    @apply absolute top-12 right-4 
+text-2xl;\n' +
+      '  }\n' +
+      '\n' +
+      '  .live-badge-card {\n' +
+      '    @apply absolute top-3 right-16 text-xs 
+text-fire font-bold animate-pulse flex items-center 
+gap-1;\n' +
+      '  }\n' +
+      '\n' +
+      '  .pcard-body {\n' +
+      '    @apply h-[40%] bg-deep flex flex-col 
+p-4;\n' +
+      '  }\n' +
+      '\n' +
+      '  .evo-tag {\n' +
+      '    @apply self-start text-xs font-bold 
+text-emerald mb-1;\n' +
+      '  }\n' +
+      '  .evo-tag.neg {\n' +
+      '    @apply text-red-500;\n' +
+      '  }\n' +
+      '\n' +
+      '  .pcard-name {\n' +
+      '    @apply text-xl font-display font-black 
+uppercase tracking-tight truncate leading-tight 
+mb-1;\n' +
+      '  }\n' +
+      '\n' +
+      '  .pcard-pos {\n' +
+      '    @apply text-sm text-txt2 font-mono 
+mb-3;\n' +
+      '  }\n' +
+      '\n' +
+      '  .pcard-stats {\n' +
+      '    @apply flex gap-4 w-full;\n' +
+      '  }\n' +
+      '\n' +
+      '  .pstat {\n' +
+      '    @apply flex flex-col items-center;\n' +
+      '  }\n' +
+      '\n' +
+      '  .pstat-v {\n' +
+      '    @apply text-lg font-display 
+leading-none;\n' +
+      '  }\n' +
+      '\n' +
+      '  .pstat-k {\n' +
+      '    @apply text-[10px] text-txt2 font-mono 
+mt-1;\n' +
+      '  }\n' +
+      '}\n',
+    url: 'file:///C:/Users/Fernando/PITCH%2026/src/a
+pp/globals.css',
+    file: 'C:\\Users\\Fernando\\PITCH 
+26\\src\\app\\globals.css'
+  },
+  plugin: 'tailwindcss'
+}

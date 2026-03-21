@@ -3,25 +3,174 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --void: #060A12;
+  --deep: #0D1826;
+  --panel: #111C2E;
+  --rim: #1A2B40;
+  --gold: #F0C040;
+  --gold-dark: #E07820;
+  --fire: #FF4D1A;
+  --ice: #38D9F5;
+  --emerald: #00E5A0;
+  --purple: #9D6FFF;
+  --txt: #EAE6DA;
+  --txt2: rgba(234, 230, 218, 0.45);
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--void);
+  color: var(--txt);
+  font-family: var(--font-barlow), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+.bg-mesh {
+  position: fixed;
+  inset: 0;
+  background-image: url('/hex-pattern.svg');
+  background-size: 60px;
+  background-repeat: repeat;
+  opacity: 0.035;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.bg-gradients {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(240, 192, 64, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(255, 77, 26, 0.04) 0%, transparent 40%),
+    radial-gradient(circle at 50% 10%, rgba(56, 217, 245, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -2;
+}
+
+@layer components {
+  .pcard {
+    @apply relative w-64 h-96 rounded-xl overflow-hidden cursor-pointer transition-transform ease-out duration-300 transform hover:scale-105;
+    background: var(--panel);
+    border: 1px solid var(--rim);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  }
+
+  .pcard-shine {
+    @apply absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300;
+    background: linear-gradient(125deg, rgba(255, 255, 255, 0.3) 0%, transparent 40%, transparent 60%, rgba(255, 255, 255, 0.1) 100%);
+  }
+
+  .pcard:hover .pcard-shine {
+    @apply opacity-100;
+  }
+
+  .pcard-tb {
+    @apply absolute top-0 left-0 right-0 h-1;
+  }
+
+  .tb-gold {
+    background: linear-gradient(to right, #F0C040, #FFD700);
+  }
+
+  .tb-silver {
+    background: linear-gradient(to right, #9ca3af, #e5e7eb);
+  }
+
+  .tb-purple {
+    background: linear-gradient(to right, #a855f7, #c084fc);
+  }
+
+  .tb-teal {
+    background: linear-gradient(to right, #0d9488, #2dd4bf);
+  }
+
+  .tb-base {
+    background: linear-gradient(to right, #4b5563, #9ca3af);
+  }
+
+  .pcard-head {
+    @apply relative h-[60%] flex flex-col items-center justify-end pb-4;
+    background: linear-gradient(to bottom, transparent 0%, var(--panel) 100%);
+  }
+
+  .pcard-glow {
+    @apply absolute inset-0 opacity-40 mix-blend-screen;
+  }
+
+  .pcard-tier {
+    @apply absolute top-3 left-3 text-[10px] font-bold tracking-widest px-2 py-0.5 rounded-sm;
+  }
+
+  .pt-legend {
+    background-color: #FFD700;
+    color: #000;
+  }
+
+  .pt-elite {
+    background-color: #D1D5DB;
+    color: #000;
+  }
+
+  .pt-moment {
+    background-color: var(--purple);
+    color: #fff;
+  }
+
+  .pt-rising {
+    background-color: var(--emerald);
+    color: #000;
+  }
+
+  .pt-base {
+    background-color: #4B5563;
+    color: #fff;
+  }
+
+  .pcard-rating {
+    @apply absolute top-2 right-3 text-4xl font-display leading-none text-white drop-shadow-md;
+  }
+
+  .pcard-flag {
+    @apply absolute top-12 right-4 text-2xl;
+  }
+
+  .live-badge-card {
+    @apply absolute top-3 right-16 text-xs text-fire font-bold animate-pulse flex items-center gap-1;
+  }
+
+  .pcard-body {
+    @apply h-[40%] bg-deep flex flex-col p-4;
+  }
+
+  .evo-tag {
+    @apply self-start text-xs font-bold text-emerald mb-1;
+  }
+
+  .evo-tag.neg {
+    @apply text-red-500;
+  }
+
+  .pcard-name {
+    @apply text-xl font-display font-black uppercase tracking-tight truncate leading-tight mb-1;
+  }
+
+  .pcard-pos {
+    @apply text-sm text-txt2 font-mono mb-3;
+  }
+
+  .pcard-stats {
+    @apply flex gap-4 w-full;
+  }
+
+  .pstat {
+    @apply flex flex-col items-center;
+  }
+
+  .pstat-v {
+    @apply text-lg font-display leading-none;
+  }
+
+  .pstat-k {
+    @apply text-[10px] text-txt2 font-mono mt-1;
   }
 }
