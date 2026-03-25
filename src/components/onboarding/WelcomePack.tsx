@@ -17,21 +17,25 @@ export default function WelcomePack({ onComplete, nation }: WelcomePackProps) {
   const cards: PlayerCardType[] = [
     {
       id: 'w1', playerId: 'p-w1', playerName: nation === 'AR' ? 'JULIÁN ÁLVAREZ' : (nation === 'BR' ? 'VINÍCIUS JR' : 'MBAPPÉ'),
+      imageUrl: nation === 'AR' ? '/players/julian_alvarez.png' : (nation === 'BR' ? '/players/vinicius_jr.png' : '/players/mbappe.png'),
       position: 'FWD', nationality: nation, flag: nation === 'AR' ? '🇦🇷' : (nation === 'BR' ? '🇧🇷' : '🇫🇷'),
       tier: 'ELITE', rating: 88, stats: { rit: 88, tir: 86, vis: 82, dri: 87, pas: 80, fis: 78 },
       evolution: { deltaToday: 0, deltaTournament: 0, lastEvent: 'Draft Inicial' }
     },
     {
       id: 'w2', playerId: 'p-w2', playerName: 'VALVERDE', position: 'MID', nationality: 'UY', flag: '🇺🇾',
+      imageUrl: '/players/valverde.png',
       tier: 'BASE', rating: 86, stats: { rit: 87, tir: 82, vis: 84, dri: 83, pas: 85, fis: 88 },
       evolution: { deltaToday: 0, deltaTournament: 0, lastEvent: 'Draft Inicial' }
     },
     {
       id: 'w3', playerId: 'p-w3', playerName: 'GAVI', position: 'MID', nationality: 'ES', flag: '🇪🇸',
+      imageUrl: '/players/gavi.png',
       tier: 'RISING', rating: 85, stats: { rit: 80, tir: 75, vis: 88, dri: 86, pas: 90, fis: 74 },
       evolution: { deltaToday: 0, deltaTournament: 0, lastEvent: 'Draft Inicial' }
     }
   ];
+
 
   const handleOpen = () => {
     setStatus('opening');

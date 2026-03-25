@@ -8,6 +8,7 @@ export interface PlayerCardType {
     id: string;
     playerId: string;
     playerName: string;
+    imageUrl?: string; // Nuevo
     position: 'FWD' | 'MID' | 'DEF' | 'GK';
     nationality: string;
     flag: string;
@@ -52,15 +53,33 @@ export function PlayerCard({ card, onPress }: { card: PlayerCardType; onPress?: 
             <div className="pcard-shine" />
             <div className={`pcard-tb ${colors.border}`} />
 
-            <div className="pcard-head">
+            <div className="pcard-head overflow-hidden">
                 <div className="pcard-glow" style={{ background: `radial-gradient(circle, ${colors.rating}, transparent)` }} />
-                <div className={`pcard-tier ${colors.tag}`}>{card.tier}</div>
-                <div className="pcard-rating" style={{ color: colors.rating }}>{card.rating}</div>
-                <div className="pcard-flag">{card.flag}</div>
-                {isLive && <div className="live-badge-card">● VIVO</div>}
+                
+                {/* Imagen del Jugador */}
+                {card.imageUrl && (
+                    <img 
+                        src={card.imageUrl} 
+                        alt={card.playerName} 
+                        className="absolute bottom-0 w-[90%] h-auto object-contain z-10 filter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]"
+                    />
+                )}
+
+                <div className={`pcard-tier ${colors.tag} z-20`}>{card.tier}</div>
+                <div className="pcard-rating z-20" style={{ color: colors.rating }}>{card.rating}</div>
+                
+                <div className="pcard-flag z-20 bg-void/50 p-1 rounded-sm border border-white/10">
+                    <img 
+                        src={`https://flagcdn.com/w40/${card.nationality.toLowerCase()}.png`} 
+                        alt={card.nationality}
+                        className="w-6 h-4 object-cover"
+                    />
+                </div>
+
+                {isLive && <div className="live-badge-card z-20">● VIVO</div>}
             </div>
 
-            <div className="pcard-body">
+            <div className="pcard-body relative z-20">
                 <div className={`evo-tag ${card.evolution.deltaToday < 0 ? 'neg' : ''}`}>
                     {card.evolution.deltaToday >= 0 ? '▲' : '▼'} {Math.abs(card.evolution.deltaToday)} hoy
                 </div>
@@ -78,3 +97,4 @@ export function PlayerCard({ card, onPress }: { card: PlayerCardType; onPress?: 
         </div>
     )
 }
+

@@ -65,7 +65,13 @@ export default function OnboardingPage() {
                     : 'bg-panel border-rim hover:border-gold/50'
                   }`}
                 >
-                  <span className="text-4xl mb-1">{n.flag}</span>
+                  <div className="w-12 h-8 relative mb-1 overflow-hidden rounded-sm shadow-sm">
+                    <img 
+                      src={`https://flagcdn.com/w80/${n.id.toLowerCase()}.png`} 
+                      alt={n.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                   <span className={`text-[10px] font-bold uppercase tracking-tighter ${selectedNation === n.id ? 'text-void' : 'text-txt2'}`}>{n.id}</span>
                 </button>
               ))}

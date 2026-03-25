@@ -8,6 +8,7 @@ const mockCards: PlayerCardType[] = [
         id: '1',
         playerId: 'p1',
         playerName: 'MESSI',
+        imageUrl: '/players/julian_alvarez.png', // Usando Julian como placeholder premium de AR
         position: 'FWD',
         nationality: 'AR',
         flag: '🇦🇷',
@@ -20,6 +21,7 @@ const mockCards: PlayerCardType[] = [
         id: '2',
         playerId: 'p2',
         playerName: 'MBAPPÉ',
+        imageUrl: '/players/mbappe.png',
         position: 'FWD',
         nationality: 'FR',
         flag: '🇫🇷',
@@ -33,9 +35,10 @@ const mockCards: PlayerCardType[] = [
         id: '3',
         playerId: 'p3',
         playerName: 'BELLINGHAM',
+        imageUrl: '/players/vinicius_jr.png', // Usando Vini como placeholder premium
         position: 'MID',
-        nationality: 'GB',
-        flag: '🇬🇧',
+        nationality: 'BR',
+        flag: '🇧🇷',
         tier: 'RISING',
         rating: 90,
         stats: { rit: 84, tir: 88, vis: 90, dri: 89, pas: 90, fis: 88 },
