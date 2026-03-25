@@ -1,12 +1,13 @@
-'use client'
+'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { PlayerCard, PlayerCardType } from '@/components/cards/PlayerCard';
+import { useLiveUpdates } from '@/hooks/useLiveUpdates';
 
-const mockCards: PlayerCardType[] = [
+const INITIAL_CARDS: PlayerCardType[] = [
     {
         id: '1',
-        playerId: 'p1',
+        playerId: 'p-messi',
         playerName: 'MESSI',
         imageUrl: '/players/julian_alvarez.png', // Usando Julian como placeholder premium de AR
         position: 'FWD',
@@ -19,7 +20,7 @@ const mockCards: PlayerCardType[] = [
     },
     {
         id: '2',
-        playerId: 'p2',
+        playerId: 'p-mbappe',
         playerName: 'MBAPPÉ',
         imageUrl: '/players/mbappe.png',
         position: 'FWD',
@@ -33,34 +34,90 @@ const mockCards: PlayerCardType[] = [
     },
     {
         id: '3',
-        playerId: 'p3',
-        playerName: 'BELLINGHAM',
-        imageUrl: '/players/vinicius_jr.png', // Usando Vini como placeholder premium
-        position: 'MID',
-        nationality: 'BR',
-        flag: '🇧🇷',
-        tier: 'RISING',
-        rating: 90,
+        playerId: 'p-julian',
+        playerName: 'JULIÁN ÁLVAREZ',
+        imageUrl: '/players/julian_alvarez.png',
+        position: 'FWD',
+        nationality: 'AR',
+        flag: '🇦🇷',
+        tier: 'ELITE',
+        rating: 88,
         stats: { rit: 84, tir: 88, vis: 90, dri: 89, pas: 90, fis: 88 },
         evolution: { deltaToday: 1, deltaTournament: 3, lastEvent: 'Asistencia' }
     }
 ]
 
 export default function ColeccionPage() {
+    const [cards, setCards] = useState(INITIAL_CARDS)
+    const [upgradingId, setUpgradingId] = useState<string | null>(null)
+    const { lastUpdate } = useLiveUpdates()
+
+    // Manejar actualizaciones en tiempo real
+    useEffect(() => {
+        if (lastUpdate) {
+            setCards(prev => prev.map(c => {
+                if (c.playerId === lastUpdate.playerId) {
+                    setUpgradingId(c.id)
+                    // Limpiar animación después de un tiempo
+                    setTimeout(() => setUpgradingId(null), 2000)
+                    
+                    return {
+                        ...c,
+                        rating: lastUpdate.newRating,
+                        evolution: {
+                            ...c.evolution,
+                            deltaToday: c.evolution.deltaToday + lastUpdate.delta,
+                            lastEvent: lastUpdate.event
+                        }
+                    }
+                }
+                return c
+            }))
+        }
+    }, [lastUpdate])
+
+    // Función para simular un evento (Para pruebas)
+    const simulateGoal = async (pid: string) => {
+        await fetch('/api/live/simulate', {
+            method: 'POST',
+            body: JSON.stringify({ playerId: pid, eventType: 'GOAL' })
+        })
+    }
+
     return (
-        <div className="p-4 h-full flex flex-col">
-            <h1 className="text-3xl font-display font-black text-white mb-6 uppercase tracking-tight">Mi Colección</h1>
+        <div className="p-4 h-full flex flex-col relative">
+            <header className="flex justify-between items-end mb-6">
+                <h1 className="text-3xl font-display font-black text-white uppercase tracking-tight">Mi Colección</h1>
+                <div className="flex gap-2">
+                    <button 
+                        onClick={() => simulateGoal('p-messi')}
+                        className="text-[10px] bg-fire/20 border border-fire/30 text-fire px-2 py-1 rounded hover:bg-fire/40 transition-colors"
+                    >
+                        SIM GOAL (MESSI)
+                    </button>
+                </div>
+            </header>
 
             <div className="flex-1 flex items-center w-full overflow-hidden">
-                <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory py-8 px-4 -mx-4 items-center" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                    {mockCards.map(card => (
+                <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory py-8 px-4 -mx-4 items-center" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                    {cards.map(card => (
                         <div key={card.id} className="snap-center shrink-0">
-                            <PlayerCard card={card} />
+                            <PlayerCard 
+                                card={card} 
+                                isUpgrading={upgradingId === card.id}
+                            />
                         </div>
                     ))}
                     <div className="snap-center shrink-0 w-8" />
                 </div>
             </div>
+
+            {/* Hint de Live Status */}
+            <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-void/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-rim">
+                <div className="w-2 h-2 bg-emerald rounded-full animate-pulse" />
+                <span className="text-[10px] font-mono text-emerald font-bold uppercase tracking-widest">Live Engine Connected</span>
+            </div>
         </div>
     );
 }
+

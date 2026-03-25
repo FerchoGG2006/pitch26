@@ -1,4 +1,4 @@
-import React from 'react';
+import { LiveTicker } from '@/components/layout/LiveTicker';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     return (
@@ -11,13 +11,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 </div>
             </header>
 
-            <div className="h-8 bg-panel flex items-center px-4 overflow-hidden border-b border-rim z-10 flex-shrink-0">
-                <div className="text-[11px] font-mono text-txt2 tracking-widest whitespace-nowrap overflow-hidden relative w-full">
-                    <div className="inline-block animate-[ticker_20s_linear_infinite]">
-                        <span className="text-fire font-bold">● VIVO</span> ARG 2 - 0 FRA 45&apos; &nbsp;&nbsp;|&nbsp;&nbsp; BRA 1 - 1 ENG 82&apos; &nbsp;&nbsp;|&nbsp;&nbsp; ESP 3 - 0 POR F
-                    </div>
-                </div>
-            </div>
+            <LiveTicker />
 
             <main className="flex-1 overflow-y-auto relative z-0">
                 {children}

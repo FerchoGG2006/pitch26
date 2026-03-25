@@ -40,26 +40,57 @@ const TIER_COLORS = {
     BASE: { border: 'tb-base', rating: '#7A8A9A', tag: 'pt-base' },
 }
 
-export function PlayerCard({ card, onPress }: { card: PlayerCardType; onPress?: () => void }) {
+import { motion, AnimatePresence } from 'framer-motion';
+
+export function PlayerCard({ card, onPress, isUpgrading }: { 
+    card: PlayerCardType; 
+    onPress?: () => void;
+    isUpgrading?: boolean; // Nuevo prop para disparar la animación
+}) {
     const colors = TIER_COLORS[card.tier]
     const isLive = card.tier === 'MOMENTO' && !card.momento?.isExpired
 
     return (
-        <div
-            className="pcard shrink-0"
+        <motion.div
+            className="pcard shrink-0 relative"
             onClick={onPress}
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: 'spring', stiffness: 300 }}
             style={{ userSelect: 'none' }}
         >
-            <div className="pcard-shine z-50" />
+            <div className="pcard-shine z-50 rounded-xl" />
             
-            {/* El marco superior (Border Top) ahora es la capa más alta */}
+            {/* El marco superior (Border Top) */}
             <div className={`pcard-tb ${colors.border} z-40`} />
+
+            {/* Animación de Subida de Nivel */}
+            <AnimatePresence>
+                {isUpgrading && (
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1.2 }}
+                        exit={{ opacity: 0, y: -40 }}
+                        className="absolute inset-0 z-[60] flex items-center justify-center pointer-events-none"
+                    >
+                        <div className="bg-gold text-void font-display font-black text-xl px-4 py-1 rounded shadow-[0_0_20px_#F0C040] uppercase italic tracking-tighter">
+                            ¡UPGRADE!
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Efecto de resplandor cuando sube de nivel */}
+            <motion.div 
+                className="absolute inset-x-0 top-0 h-1/2 bg-gold/20 blur-2xl z-30 pointer-events-none"
+                animate={isUpgrading ? { opacity: [0, 1, 0] } : { opacity: 0 }}
+                transition={{ duration: 0.8 }}
+            />
 
             <div className="pcard-head overflow-hidden relative">
                 {/* Fondo con brillo dinámico */}
                 <div className="pcard-glow" style={{ background: `radial-gradient(circle, ${colors.rating}, transparent)` }} />
                 
-                {/* Imagen del Jugador con máscara de suavizado (Bottom fade) */}
+                {/* Imagen del Jugador */}
                 {card.imageUrl && (
                     <img 
                         src={card.imageUrl} 
@@ -75,7 +106,14 @@ export function PlayerCard({ card, onPress }: { card: PlayerCardType; onPress?: 
                 )}
 
                 <div className={`pcard-tier ${colors.tag} z-20`}>{card.tier}</div>
-                <div className="pcard-rating z-20" style={{ color: colors.rating }}>{card.rating}</div>
+                
+                <motion.div 
+                    className="pcard-rating z-20" 
+                    style={{ color: colors.rating }}
+                    animate={isUpgrading ? { scale: [1, 1.4, 1] } : {}}
+                >
+                    {card.rating}
+                </motion.div>
                 
                 <div className="pcard-flag z-20 bg-void/60 p-1 rounded-sm border border-white/10 backdrop-blur-sm">
                     <img 
@@ -103,7 +141,7 @@ export function PlayerCard({ card, onPress }: { card: PlayerCardType; onPress?: 
                     ))}
                 </div>
             </div>
-        </div>
+        </motion.div>
     )
 }
 
