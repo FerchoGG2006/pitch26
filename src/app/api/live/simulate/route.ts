@@ -1,4 +1,4 @@
-import { simulateMatchEvent } from '@/lib/live-engine'
+import { simulateMatchEvent, triggerSpecialMomento } from '@/lib/live-engine'
 import { MatchEventType } from '@/lib/ratings'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -15,11 +15,16 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Missing playerId or eventType' }, { status: 400 })
         }
 
-        const result = await simulateMatchEvent(playerId, eventType as MatchEventType)
+        let result;
+        if (eventType === 'MOMENTO') {
+            result = await triggerSpecialMomento(playerId, '¡GOL AL MINUTO 120 DE LA FINAL!')
+        } else {
+            result = await simulateMatchEvent(playerId, eventType as MatchEventType)
+        }
 
         return NextResponse.json({ 
             success: true, 
-            message: `Event ${eventType} simulated for ${result.playerName}`,
+            message: `Event ${eventType} simulated for ${playerId}`,
             result 
         })
     } catch (error: any) {

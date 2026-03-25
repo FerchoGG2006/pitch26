@@ -8,6 +8,8 @@ export interface LiveUpdate {
     event: string;
     delta: number;
     newRating: number;
+    type?: string; 
+    card?: any; // Para eventos de tipo MOMENTO
 }
 
 /**
@@ -15,6 +17,7 @@ export interface LiveUpdate {
  */
 export function useLiveUpdates() {
     const [lastUpdate, setLastUpdate] = useState<LiveUpdate | null>(null)
+    const [activeMomento, setActiveMomento] = useState<any | null>(null)
 
     useEffect(() => {
         // Conectar al endpoint de SSE
@@ -24,7 +27,12 @@ export function useLiveUpdates() {
             try {
                 const data = JSON.parse(event.data)
                 console.log('⚽ Live Update Received:', data)
-                setLastUpdate(data)
+
+                if (data.type === 'MOMENTO_SPAWNED') {
+                    setActiveMomento(data.card)
+                } else {
+                    setLastUpdate(data)
+                }
             } catch (err) {
                 console.error('Error parsing SSE message:', err)
             }
@@ -32,7 +40,6 @@ export function useLiveUpdates() {
 
         eventSource.onerror = (err) => {
             console.error('SSE Connection Error:', err)
-            // EventSource reconectará automáticamente por defecto
         }
 
         return () => {
@@ -40,5 +47,5 @@ export function useLiveUpdates() {
         }
     }, [])
 
-    return { lastUpdate }
+    return { lastUpdate, activeMomento, clearMomento: () => setActiveMomento(null) }
 }

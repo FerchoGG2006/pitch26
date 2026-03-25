@@ -40,23 +40,57 @@ const TIER_COLORS = {
     BASE: { border: 'tb-base', rating: '#7A8A9A', tag: 'pt-base' },
 }
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
 export function PlayerCard({ card, onPress, isUpgrading }: { 
     card: PlayerCardType; 
     onPress?: () => void;
-    isUpgrading?: boolean; // Nuevo prop para disparar la animación
+    isUpgrading?: boolean;
 }) {
     const colors = TIER_COLORS[card.tier]
     const isLive = card.tier === 'MOMENTO' && !card.momento?.isExpired
+
+    // 3D Tilt Logic
+    const x = useMotionValue(0)
+    const y = useMotionValue(0)
+
+    const mouseXSpring = useSpring(x)
+    const mouseYSpring = useSpring(y)
+
+    const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['10deg', '-10deg'])
+    const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-10deg', '10deg'])
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        const rect = e.currentTarget.getBoundingClientRect()
+        const width = rect.width
+        const height = rect.height
+        const mouseX = e.clientX - rect.left
+        const mouseY = e.clientY - rect.top
+        const xPct = mouseX / width - 0.5
+        const yPct = mouseY / height - 0.5
+        x.set(xPct)
+        y.set(yPct)
+    }
+
+    const handleMouseLeave = () => {
+        x.set(0)
+        y.set(0)
+    }
 
     return (
         <motion.div
             className="pcard shrink-0 relative"
             onClick={onPress}
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: 'spring', stiffness: 300 }}
-            style={{ userSelect: 'none' }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{ 
+                rotateX, 
+                rotateY, 
+                transformStyle: 'preserve-3d',
+                userSelect: 'none' 
+            }}
+            whileHover={{ scale: 1.02 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
         >
             <div className="pcard-shine z-50 rounded-xl" />
             

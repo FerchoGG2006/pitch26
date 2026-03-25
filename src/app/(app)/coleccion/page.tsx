@@ -84,32 +84,37 @@ export default function ColeccionPage() {
         })
     }
 
+    const simulateMessiGoal = () => simulateGoal('p-messi');
+
     return (
-        <div className="p-4 h-full flex flex-col relative">
-            <header className="flex justify-between items-end mb-6">
-                <h1 className="text-3xl font-display font-black text-white uppercase tracking-tight">Mi Colección</h1>
-                <div className="flex gap-2">
-                    <button 
-                        onClick={() => simulateGoal('p-messi')}
-                        className="text-[10px] bg-fire/20 border border-fire/30 text-fire px-2 py-1 rounded hover:bg-fire/40 transition-colors"
-                    >
-                        SIM GOAL (MESSI)
-                    </button>
+        <div className="relative min-h-screen pt-4 px-4 pb-20 overflow-x-hidden">
+            <header className="flex justify-between items-end mb-8 mt-2">
+                <div>
+                    <h1 className="text-4xl font-display font-black tracking-tighter uppercase italic leading-tight">
+                        MI <span className="text-gold">COLECCIÓN</span>
+                    </h1>
+                    <p className="text-[10px] font-mono text-txt2 tracking-widest uppercase">PITCH 26 · WORLD CUP EDITION</p>
                 </div>
+                
+                <button 
+                    onClick={simulateMessiGoal}
+                    className="bg-fire/20 hover:bg-fire/40 border border-fire/50 text-fire text-[10px] font-black px-4 py-2 rounded-lg flex items-center gap-2 transition-all active:scale-95"
+                >
+                    <div className="w-2 h-2 bg-fire rounded-full animate-pulse" />
+                    SIM GOAL (MESSI)
+                </button>
             </header>
 
-            <div className="flex-1 flex items-center w-full overflow-hidden">
-                <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory py-8 px-4 -mx-4 items-center" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                    {cards.map(card => (
-                        <div key={card.id} className="snap-center shrink-0">
-                            <PlayerCard 
-                                card={card} 
-                                isUpgrading={upgradingId === card.id}
-                            />
-                        </div>
-                    ))}
-                    <div className="snap-center shrink-0 w-8" />
-                </div>
+            <div className="flex gap-6 overflow-x-auto pb-12 pt-4 px-2 snap-x snap-mandatory scrollbar-hide no-scrollbar" style={{ perspective: '1000px' }}>
+                {cards.map(card => (
+                    <div key={card.id} className="snap-center shrink-0">
+                        <PlayerCard 
+                            card={card} 
+                            isUpgrading={upgradingId === card.id}
+                        />
+                    </div>
+                ))}
+                <div className="snap-center shrink-0 w-8" />
             </div>
 
             {/* Hint de Live Status */}

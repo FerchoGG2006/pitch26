@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Barlow, Barlow_Condensed, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { DynamicBackground } from "@/components/layout/DynamicBackground";
 
 const barlow = Barlow({
   subsets: ["latin"],

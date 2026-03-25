@@ -19,6 +19,7 @@ export async function GET(req: NextRequest) {
 
     // Suscribirse a los eventos del motor global
     liveEvents.on('update', onUpdate)
+    liveEvents.on('momento', onUpdate)
 
     // Intervalo de heartbeat para mantener la conexión viva (PWA requirement)
     const heartbeat = setInterval(() => {
@@ -29,6 +30,7 @@ export async function GET(req: NextRequest) {
     req.signal.onabort = () => {
         clearInterval(heartbeat)
         liveEvents.off('update', onUpdate)
+        liveEvents.off('momento', onUpdate)
         writer.close()
     }
 

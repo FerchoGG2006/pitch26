@@ -50,16 +50,56 @@ export async function simulateMatchEvent(playerId: string, eventType: MatchEvent
         timestamp: Date.now()
     })
 
-    const result = {
+    const result: LiveSimulationResult = {
         playerId,
         playerName: player.name,
         event: eventType,
         delta,
-        newRating: player.baseRating + newHotDelta // Simplificado para simulación
+        newRating: 0 // Se delegará al cliente o se sacará de la DB si es necesario
     }
 
     // 5. Emitir evento para el broadcaster SSE
     liveEvents.emit('update', result)
 
     return result
+}
+
+/**
+ * Genera un "MOMENTO" especial basado en una jugada histórica.
+ * Crea una carta única con ventana de reclamo de 30 minutos.
+ */
+export async function triggerSpecialMomento(playerId: string, matchEvent: string) {
+    const player = await prisma.player.findUnique({ where: { id: playerId }})
+    if (!player) throw new Error('Player not found')
+
+    const expiry = new Date(Date.now() + 30 * 60000) // 30 minutos
+
+    // Crear la carta maestra del Momento
+    const momentoCard = await prisma.playerCard.create({
+        data: {
+            playerId: player.id,
+            tier: 'MOMENTO',
+            rating: 95, // Rating base alto para momentos
+            isMomento: true,
+            momentoExpiry: expiry,
+            momentoMatch: matchEvent,
+            lastEvent: 'SPECIAL_GOAL'
+        }
+    })
+
+    const eventData = {
+        type: 'MOMENTO_SPAWNED',
+        card: {
+            ...momentoCard,
+            playerName: player.name,
+            nationality: player.nationality,
+            flag: player.flag,
+            position: player.position
+        }
+    }
+
+    // Notificar a todos los clientes vía SSE
+    liveEvents.emit('momento', eventData)
+
+    return eventData
 }
