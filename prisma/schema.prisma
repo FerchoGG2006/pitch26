@@ -1,0 +1,172 @@
+// PITCH 26 · Prisma Schema
+// Stack: Next.js 14 + Neon (PostgreSQL) + NextAuth.js
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── NextAuth required models ─────────────────────────────────────────────────
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─── PITCH 26 core models ─────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+
+  // Progression
+  xp            Int       @default(0)
+  level         Int       @default(1)
+  coins         Int       @default(0)        // moneda blanda
+  gems          Int       @default(0)        // moneda premium
+
+  // Season pass
+  hasSeason     Boolean   @default(false)
+  seasonExpiry  DateTime?
+
+  // Relations
+  accounts      Account[]
+  sessions      Session[]
+  collection    UserCard[]
+  packs         PackOpening[]
+  nation        String?        // ISO 2-letter code elegida en onboarding
+}
+
+// ─── Player catalogue (populated via SportRadar webhook) ──────────────────────
+
+enum CardTier {
+  BASE
+  RISING
+  ELITE
+  LEGEND
+  MOMENTO
+}
+
+enum Position {
+  GK
+  DEF
+  MID
+  FWD
+}
+
+model Player {
+  id          String   @id @default(cuid())
+  externalId  String   @unique  // SportRadar player ID
+  name        String
+  nationality String
+  flag        String
+  position    Position
+  teamName    String?
+  updatedAt   DateTime @updatedAt
+
+  cards       PlayerCard[]
+}
+
+model PlayerCard {
+  id         String   @id @default(cuid())
+  playerId   String
+  player     Player   @relation(fields: [playerId], references: [id])
+
+  tier       CardTier @default(BASE)
+  rating     Int
+
+  // Live stats snapshot
+  ritmo      Int      @default(70)
+  tiro       Int      @default(70)
+  vision     Int      @default(70)
+  dribling   Int      @default(70)
+  pase       Int      @default(70)
+  fisico     Int      @default(70)
+
+  // Evolution deltas
+  deltaToday      Int @default(0)
+  deltaTournament Int @default(0)
+  lastEvent       String?
+
+  // Momento metadata
+  isMomento       Boolean  @default(false)
+  momentoExpiry   DateTime?  // 30 min window
+  momentoMatch    String?
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  userCards  UserCard[]
+}
+
+// ─── User collection (many-to-many bridge) ────────────────────────────────────
+
+model UserCard {
+  id           String     @id @default(cuid())
+  userId       String
+  cardId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  card         PlayerCard @relation(fields: [cardId], references: [id])
+  obtainedAt   DateTime   @default(now())
+  isFavorite   Boolean    @default(false)
+  packOpeningId String?
+  packOpening  PackOpening? @relation(fields: [packOpeningId], references: [id])
+
+  @@unique([userId, cardId])
+}
+
+// ─── Pack openings ────────────────────────────────────────────────────────────
+
+enum PackType {
+  WELCOME
+  STANDARD
+  PREMIUM
+  MOMENTO
+}
+
+model PackOpening {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  packType  PackType
+  openedAt  DateTime @default(now())
+  cards     UserCard[]
+}
