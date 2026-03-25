@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react';
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
 type CardTier = 'LEGEND' | 'ELITE' | 'MOMENTO' | 'RISING' | 'BASE';
 
@@ -8,7 +9,7 @@ export interface PlayerCardType {
     id: string;
     playerId: string;
     playerName: string;
-    imageUrl?: string; // Nuevo
+    imageUrl?: string;
     position: 'FWD' | 'MID' | 'DEF' | 'GK';
     nationality: string;
     flag: string;
@@ -40,23 +41,22 @@ const TIER_COLORS = {
     BASE: { border: 'tb-base', rating: '#7A8A9A', tag: 'pt-base' },
 }
 
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
-
 export function PlayerCard({ card, onPress, isUpgrading }: { 
     card: PlayerCardType; 
     onPress?: () => void;
     isUpgrading?: boolean;
 }) {
-    const colors = TIER_COLORS[card.tier]
+    // Fallbacks
+    const colors = TIER_COLORS[card.tier] || TIER_COLORS.BASE
     const isLive = card.tier === 'MOMENTO' && !card.momento?.isExpired
+    const stats = card.stats || { rit: 0, tir: 0, vis: 0, dri: 0, pas: 0, fis: 0 }
+    const evolution = card.evolution || { deltaToday: 0, deltaTournament: 0, lastEvent: '-' }
 
     // 3D Tilt Logic
     const x = useMotionValue(0)
     const y = useMotionValue(0)
-
     const mouseXSpring = useSpring(x)
     const mouseYSpring = useSpring(y)
-
     const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['10deg', '-10deg'])
     const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-10deg', '10deg'])
 
@@ -94,88 +94,96 @@ export function PlayerCard({ card, onPress, isUpgrading }: {
         >
             <div className="pcard-shine z-50 rounded-xl" />
             
-            {/* El marco superior (Border Top) */}
-            <div className={`pcard-tb ${colors.border} z-40`} />
-
-            {/* Animación de Subida de Nivel */}
             <AnimatePresence>
                 {isUpgrading && (
                     <motion.div 
-                        initial={{ opacity: 0, scale: 0.8 }}
+                        initial={{ opacity: 0, scale: 0.5 }}
                         animate={{ opacity: 1, scale: 1.2 }}
-                        exit={{ opacity: 0, y: -40 }}
-                        className="absolute inset-0 z-[60] flex items-center justify-center pointer-events-none"
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-x-0 -top-4 z-[60] flex flex-col items-center pointer-events-none"
                     >
-                        <div className="bg-gold text-void font-display font-black text-xl px-4 py-1 rounded shadow-[0_0_20px_#F0C040] uppercase italic tracking-tighter">
+                        <div className="bg-fire text-void text-[10px] font-black px-3 py-1 rounded-full shadow-lg shadow-fire/50 animate-bounce uppercase">
                             ¡UPGRADE!
                         </div>
                     </motion.div>
                 )}
             </AnimatePresence>
 
-            {/* Efecto de resplandor cuando sube de nivel */}
-            <motion.div 
-                className="absolute inset-x-0 top-0 h-1/2 bg-gold/20 blur-2xl z-30 pointer-events-none"
-                animate={isUpgrading ? { opacity: [0, 1, 0] } : { opacity: 0 }}
-                transition={{ duration: 0.8 }}
-            />
-
-            <div className="pcard-head overflow-hidden relative">
-                {/* Fondo con brillo dinámico */}
-                <div className="pcard-glow" style={{ background: `radial-gradient(circle, ${colors.rating}, transparent)` }} />
-                
-                {/* Imagen del Jugador */}
-                {card.imageUrl && (
-                    <img 
-                        src={card.imageUrl} 
-                        alt={card.playerName} 
-                        className="absolute bottom-0 w-[110%] h-[110%] object-cover z-10 filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]"
-                        style={{ 
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                            maskImage: 'linear-gradient(to top, black 70%, transparent 100%)',
-                            WebkitMaskImage: 'linear-gradient(to top, black 70%, transparent 100%)'
-                        }}
-                    />
-                )}
-
-                <div className={`pcard-tier ${colors.tag} z-20`}>{card.tier}</div>
-                
-                <motion.div 
-                    className="pcard-rating z-20" 
-                    style={{ color: colors.rating }}
-                    animate={isUpgrading ? { scale: [1, 1.4, 1] } : {}}
-                >
-                    {card.rating}
-                </motion.div>
-                
-                <div className="pcard-flag z-20 bg-void/60 p-1 rounded-sm border border-white/10 backdrop-blur-sm">
-                    <img 
-                        src={`https://flagcdn.com/w40/${card.nationality.toLowerCase()}.png`} 
-                        alt={card.nationality}
-                        className="w-6 h-4 object-cover"
-                    />
-                </div>
-
-                {isLive && <div className="live-badge-card z-20">● VIVO</div>}
-            </div>
-
-            <div className="pcard-body relative z-20">
-                <div className={`evo-tag ${card.evolution.deltaToday < 0 ? 'neg' : ''}`}>
-                    {card.evolution.deltaToday >= 0 ? '▲' : '▼'} {Math.abs(card.evolution.deltaToday)} hoy
-                </div>
-                <div className="pcard-name">{card.playerName}</div>
-                <div className="pcard-pos">{card.position}</div>
-                <div className="pcard-stats">
-                    {Object.entries(card.stats).slice(0, 3).map(([key, val]) => (
-                        <div key={key} className="pstat">
-                            <div className="pstat-v" style={{ color: colors.rating }}>{val}</div>
-                            <div className="pstat-k">{key.toUpperCase()}</div>
+            <div className={`pcard-inner ${colors.border}`}>
+                <div className="flex justify-between items-start mb-1">
+                    <div className="flex flex-col">
+                        <span className="pcard-rating text-3xl font-black" style={{ color: colors.rating }}>{card.rating}</span>
+                        <span className="pcard-pos text-[10px] font-bold opacity-70 uppercase tracking-tighter">{card.position}</span>
+                    </div>
+                    <div className="flex flex-col items-end">
+                        <span className="text-lg leading-none">{card.flag}</span>
+                        <div className={`mt-1 h-3 px-1 rounded-sm text-[8px] font-black flex items-center ${colors.tag} uppercase`}>
+                            {card.tier}
                         </div>
-                    ))}
+                    </div>
+                </div>
+
+                <div className="relative w-full aspect-[4/5] -mt-2 mb-1 overflow-hidden">
+                    {card.imageUrl && (
+                        <img 
+                            src={card.imageUrl} 
+                            alt={card.playerName}
+                            className="w-full h-full object-contain relative z-10 pcard-player-img" 
+                        />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-panel/90 to-transparent z-0" />
+                    
+                    {isLive && (
+                        <div className="absolute top-2 right-0 bg-fire text-void text-[7px] font-black px-1.5 py-0.5 rounded-l-md z-20 animate-pulse">
+                            ● VIVO
+                        </div>
+                    )}
+                </div>
+
+                <div className="text-center mb-2 px-1">
+                    <h3 className="text-base font-display font-black tracking-tighter uppercase italic truncate leading-none">
+                        {card.playerName}
+                    </h3>
+                </div>
+
+                <div className="grid grid-cols-3 gap-y-1 gap-x-2 border-t border-rim/30 pt-2 mb-2">
+                    <div className="flex flex-col items-center">
+                        <span className="text-[7px] opacity-40 font-bold tracking-tighter">RIT</span>
+                        <span className="text-[10px] font-black">{stats.rit}</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <span className="text-[7px] opacity-40 font-bold tracking-tighter">TIR</span>
+                        <span className="text-[10px] font-black">{stats.tir}</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <span className="text-[7px] opacity-40 font-bold tracking-tighter">VIS</span>
+                        <span className="text-[10px] font-black">{stats.vis}</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <span className="text-[7px] opacity-40 font-bold tracking-tighter">DRI</span>
+                        <span className="text-[10px] font-black">{stats.dri}</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <span className="text-[7px] opacity-40 font-bold tracking-tighter">PAS</span>
+                        <span className="text-[10px] font-black">{stats.pas}</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <span className="text-[7px] opacity-40 font-bold tracking-tighter">FIS</span>
+                        <span className="text-[10px] font-black">{stats.fis}</span>
+                    </div>
+                </div>
+
+                <div className="mt-auto px-1 py-1 bg-void/30 rounded border border-rim/20">
+                    <div className="flex items-center justify-between gap-1 overflow-hidden">
+                        <span className={`text-[8px] font-bold truncate uppercase ${isLive ? 'text-fire' : 'text-txt2'}`}>
+                            {evolution.lastEvent}
+                        </span>
+                        <span className={`text-[8px] font-black shrink-0 ${evolution.deltaToday > 0 ? 'text-emerald' : 'text-txt2'}`}>
+                            {evolution.deltaToday >= 0 ? `+${evolution.deltaToday}` : evolution.deltaToday}
+                        </span>
+                    </div>
                 </div>
             </div>
         </motion.div>
-    )
+    );
 }
-

@@ -94,7 +94,10 @@ export async function triggerSpecialMomento(playerId: string, matchEvent: string
             playerName: player.name,
             nationality: player.nationality,
             flag: player.flag,
-            position: player.position
+            position: player.position,
+            // Datos por defecto para evitar crash en PlayerCard
+            stats: { rit: 99, tir: 95, vis: 90, dri: 96, pas: 92, fis: 88 },
+            evolution: { deltaToday: 0, deltaTournament: 0, lastEvent: 'ESPECIAL' }
         }
     }
 
