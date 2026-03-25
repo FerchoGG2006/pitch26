@@ -50,25 +50,34 @@ export function PlayerCard({ card, onPress }: { card: PlayerCardType; onPress?: 
             onClick={onPress}
             style={{ userSelect: 'none' }}
         >
-            <div className="pcard-shine" />
-            <div className={`pcard-tb ${colors.border}`} />
+            <div className="pcard-shine z-50" />
+            
+            {/* El marco superior (Border Top) ahora es la capa más alta */}
+            <div className={`pcard-tb ${colors.border} z-40`} />
 
-            <div className="pcard-head overflow-hidden">
+            <div className="pcard-head overflow-hidden relative">
+                {/* Fondo con brillo dinámico */}
                 <div className="pcard-glow" style={{ background: `radial-gradient(circle, ${colors.rating}, transparent)` }} />
                 
-                {/* Imagen del Jugador */}
+                {/* Imagen del Jugador con máscara de suavizado (Bottom fade) */}
                 {card.imageUrl && (
                     <img 
                         src={card.imageUrl} 
                         alt={card.playerName} 
-                        className="absolute bottom-0 w-[90%] h-auto object-contain z-10 filter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]"
+                        className="absolute bottom-0 w-[110%] h-[110%] object-cover z-10 filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]"
+                        style={{ 
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            maskImage: 'linear-gradient(to top, black 70%, transparent 100%)',
+                            WebkitMaskImage: 'linear-gradient(to top, black 70%, transparent 100%)'
+                        }}
                     />
                 )}
 
                 <div className={`pcard-tier ${colors.tag} z-20`}>{card.tier}</div>
                 <div className="pcard-rating z-20" style={{ color: colors.rating }}>{card.rating}</div>
                 
-                <div className="pcard-flag z-20 bg-void/50 p-1 rounded-sm border border-white/10">
+                <div className="pcard-flag z-20 bg-void/60 p-1 rounded-sm border border-white/10 backdrop-blur-sm">
                     <img 
                         src={`https://flagcdn.com/w40/${card.nationality.toLowerCase()}.png`} 
                         alt={card.nationality}
