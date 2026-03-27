@@ -99,9 +99,17 @@ export default function PlayPage() {
                         exit={{ opacity: 0, scale: 0.95 }}
                         className="max-w-4xl mx-auto"
                     >
-                        <div className="flex items-center gap-4 mb-10">
-                            <Swords className="w-10 h-10 text-gold" />
-                            <h1 className="text-4xl font-display font-black italic tracking-[2px] uppercase">DUELOS 1V1</h1>
+                        <div className="flex items-center justify-between mb-10">
+                            <div className="flex items-center gap-4">
+                                <Swords className="w-10 h-10 text-gold" />
+                                <h1 className="text-4xl font-display font-black italic tracking-[2px] uppercase">DUELOS 1V1</h1>
+                            </div>
+                            <button 
+                                onClick={() => window.location.href = '/coleccion'}
+                                className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors"
+                            >
+                                <ChevronLeft className="w-6 h-6" />
+                            </button>
                         </div>
 
                         <div className="bg-panel/40 backdrop-blur-xl border border-white/5 rounded-3xl p-10 shadow-2xl">
@@ -254,33 +262,33 @@ export default function PlayPage() {
                                 <motion.div 
                                     initial={{ opacity: 0, scale: 0.5, y: 100 }}
                                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                                    className="absolute inset-0 z-[110] bg-void/90 flex flex-col items-center justify-center pt-20"
+                                    className="absolute inset-0 z-[110] bg-void/95 flex flex-col items-center justify-center p-6 text-center"
                                 >
-                                    <h3 className={`text-8xl md:text-9xl font-display font-black italic tracking-[10px] uppercase drop-shadow-[0_0_50px_rgba(255,255,255,0.2)] ${duelResult.score[0] > duelResult.score[1] ? 'text-emerald' : 'text-fire'}`}>
+                                    <h3 className={`text-6xl md:text-8xl font-display font-black italic tracking-[4px] uppercase ${duelResult.score[0] > duelResult.score[1] ? 'text-emerald' : 'text-fire'}`}>
                                         {duelResult.score[0] > duelResult.score[1] ? 'VICTORIA' : 'DERROTA'}
                                     </h3>
                                     
-                                    <div className="flex gap-8 mt-12 bg-panel/60 p-8 rounded-3xl border border-white/5 backdrop-blur-xl">
-                                        <div className="flex flex-col items-center">
-                                            <div className="w-12 h-12 rounded-full bg-ice/20 border border-ice/40 flex items-center justify-center text-ice text-xl mb-2">⚡</div>
-                                            <span className="text-[10px] font-bold text-txt3 uppercase tracking-widest">XP GANADA</span>
-                                            <span className="text-3xl font-display font-black text-ice">+{duelResult.rewards.xp}</span>
+                                    <div className="flex gap-4 mt-8 bg-panel/60 p-6 rounded-3xl border border-white/5 backdrop-blur-3xl">
+                                        <div className="flex flex-col items-center min-w-[100px]">
+                                            <div className="w-10 h-10 rounded-full bg-ice/20 border border-ice/40 flex items-center justify-center text-ice text-lg mb-1">⚡</div>
+                                            <span className="text-[8px] font-black text-txt3 uppercase tracking-[2px]">XP GANADA</span>
+                                            <span className="text-2xl font-display font-black text-ice">+{duelResult.rewards.xp}</span>
                                         </div>
                                         <div className="w-[1px] bg-white/10" />
-                                        <div className="flex flex-col items-center">
-                                            <div className="w-12 h-12 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center text-gold text-xl mb-2">
-                                                <Coins className="w-6 h-6" />
+                                        <div className="flex flex-col items-center min-w-[100px]">
+                                            <div className="w-10 h-10 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center text-gold text-lg mb-1">
+                                                <Coins className="w-5 h-5" />
                                             </div>
-                                            <span className="text-[10px] font-bold text-txt3 uppercase tracking-widest">MONEDAS</span>
-                                            <span className="text-3xl font-display font-black text-gold">+{duelResult.rewards.coins}</span>
+                                            <span className="text-[8px] font-black text-txt3 uppercase tracking-[2px]">MONEDAS</span>
+                                            <span className="text-2xl font-display font-black text-gold">+{duelResult.rewards.coins}</span>
                                         </div>
                                     </div>
 
                                     <button 
                                         onClick={resetDuel}
-                                        className="mt-16 bg-white text-void font-display font-black px-12 py-4 rounded-full text-lg shadow-2xl hover:bg-gold transition-colors active:scale-95"
+                                        className="mt-10 bg-gold text-void font-display font-black px-12 py-4 rounded-full text-lg shadow-[0_0_30px_rgba(242,196,65,0.4)] hover:shadow-gold transition-all active:scale-90"
                                     >
-                                        REINTENTAR / VOLVER
+                                        CONTINUAR
                                     </button>
                                 </motion.div>
                             )}

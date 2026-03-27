@@ -19,12 +19,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <div className="relative w-full max-w-[430px] min-h-screen bg-void shadow-[0_0_100px_rgba(0,0,0,0.8)] flex flex-col z-10 border-x border-white/5 border-glow">
                 
                 {!isAuth && (
-                    <div className="absolute top-0 left-0 right-0 z-[100] w-full bg-[#0A1422]/60 backdrop-blur-xl">
+                    <div className="absolute top-0 left-0 right-0 z-[100] w-full bg-[#0A1422]/80 backdrop-blur-xl border-b border-white/5">
                         <StatusBar />
                     </div>
                 )}
 
-                <main className="flex-1 overflow-y-auto no-scrollbar pb-32">
+                <main className="flex-1 overflow-y-auto no-scrollbar pt-11 pb-32">
                     {children}
                 </main>
 
