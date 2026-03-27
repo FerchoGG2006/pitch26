@@ -1,49 +1,48 @@
-'use client';
+'use client'
 
+import React from 'react';
+import { StatusBar } from '@/components/layout/StatusBar';
 import { BottomNav } from '@/components/layout/BottomNav';
-import { LiveTicker } from '@/components/layout/LiveTicker';
-import { MomentoClaim } from '@/components/momentos/MomentoClaim';
-import { useLiveUpdates } from '@/hooks/useLiveUpdates';
-import { AnimatePresence } from 'framer-motion';
+import { usePathname } from 'next/navigation';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-    const { activeMomento, clearMomento } = useLiveUpdates()
+    const pathname = usePathname();
+    const isAuth = pathname.startsWith('/auth');
 
-    const handleClaim = (id: string) => {
-        console.log('Claiming Momento:', id)
-        // La lógica persistente se llamará desde el componente MomentoClaim
-    }
-
+    // Viewport Locking for Mobile Game feel (430px centered)
     return (
-        <div className="flex flex-col h-screen overflow-hidden text-txt bg-void">
-            <header className="h-16 flex-shrink-0 border-b border-rim bg-deep/80 backdrop-blur-md px-4 flex items-center justify-between z-10">
-                <div className="font-display font-black text-2xl tracking-tighter text-gold italic uppercase text-glow">PITCH 26</div>
-                <div className="flex items-center gap-3">
-                    <div className="bg-panel px-3 py-1 rounded-full text-xs font-mono font-bold text-emerald border border-rim">500 XP</div>
-                    <div className="w-8 h-8 rounded-full bg-rim border-2 border-void overflow-hidden">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" className="w-full h-full object-cover" />
+        <div className="min-h-screen bg-[#020817] flex justify-center overflow-x-hidden font-sans antialiased text-white selection:bg-purple/30">
+            
+            {/* Global Mesh Background (Shared) */}
+            <div className="fixed inset-0 z-0 bg-[radial-gradient(circle_at_50%_0%,rgba(56,217,245,0.08)_0%,transparent_70%)] pointer-events-none" />
+
+            <div className="relative w-full max-w-[430px] min-h-screen bg-void shadow-[0_0_100px_rgba(0,0,0,0.8)] flex flex-col z-10 border-x border-white/5 border-glow">
+                
+                {!isAuth && (
+                    <div className="absolute top-0 left-0 right-0 z-[100] w-full bg-[#0A1422]/60 backdrop-blur-xl">
+                        <StatusBar />
                     </div>
-                </div>
-            </header>
-
-            <LiveTicker />
-
-            <main className="flex-1 overflow-y-auto relative z-0 pb-32">
-                {children}
-            </main>
-
-            <BottomNav />
-
-            {/* Modal Global de Momentos */}
-            <AnimatePresence>
-                {activeMomento && (
-                    <MomentoClaim 
-                        card={activeMomento}
-                        onClaim={handleClaim}
-                        onClose={clearMomento}
-                    />
                 )}
-            </AnimatePresence>
+
+                <main className="flex-1 overflow-y-auto no-scrollbar pb-32">
+                    {children}
+                </main>
+
+                {!isAuth && <BottomNav />}
+            </div>
+
+            <style jsx global>{`
+                .no-scrollbar::-webkit-scrollbar {
+                    display: none;
+                }
+                .no-scrollbar {
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                }
+                .border-glow {
+                   box-shadow: 0 0 40px rgba(0,0,0,0.5);
+                }
+            `}</style>
         </div>
     );
 }

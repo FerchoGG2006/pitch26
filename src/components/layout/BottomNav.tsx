@@ -1,61 +1,68 @@
 'use client'
 
-import React from 'react'
-import { LayoutGrid, ShoppingBag, Trophy, Zap, User } from 'lucide-react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { motion } from 'framer-motion'
+import React from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { LayoutGrid, Swords, ShoppingBag, Zap } from 'lucide-react';
 
-const NAV_ITEMS = [
-    { label: 'COLECCIÓN', icon: LayoutGrid, href: '/coleccion' },
-    { label: 'MERCADO', icon: ShoppingBag, href: '/mercado' },
-    { label: 'PLAY', icon: Zap, href: '/play', center: true },
-    { label: 'DUELOS', icon: Trophy, href: '/duelos' },
-    { label: 'MOMENTOS', icon: Zap, href: '/momentos', color: 'text-fire' },
+const TABS = [
+    { id: 'coleccion', label: 'COLECCIÓN', icon: LayoutGrid, href: '/coleccion' },
+    { id: 'play', label: 'DUELOS', icon: Swords, href: '/play' },
+    { id: 'mercado', label: 'MERCADO', icon: ShoppingBag, href: '/mercado' },
+    { id: 'momentos', label: 'MOMENTOS', icon: Zap, href: '/momentos' },
 ]
 
 export function BottomNav() {
-    const pathname = usePathname()
+    const pathname = usePathname();
 
     return (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md z-50">
-            <nav className="bg-deep/80 backdrop-blur-xl border border-rim rounded-2xl h-16 px-4 flex items-center justify-between shadow-2xl relative">
-                {NAV_ITEMS.map((item, idx) => {
-                    const isActive = pathname === item.href
-                    const Icon = item.icon
+        <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-[100] px-4 pb-8">
+            <div className="relative bg-[#0A1422]/80 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-2 flex items-center justify-around shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
+                
+                {/* Active Indicator Layer */}
+                <div className="absolute inset-0 z-0 pointer-events-none" />
 
-                    if (item.center) {
-                        return (
-                            <Link key={idx} href={item.href} className="relative -top-6">
-                                <motion.div 
-                                    whileHover={{ scale: 1.1 }}
-                                    whileTap={{ scale: 0.9 }}
-                                    className="w-14 h-14 bg-gradient-to-tr from-gold to-gold-dark rounded-2xl shadow-lg shadow-gold/20 flex items-center justify-center border-4 border-void"
-                                >
-                                    <Icon className="w-8 h-8 text-void fill-current" />
-                                </motion.div>
-                            </Link>
-                        )
-                    }
-
+                {TABS.map((tab) => {
+                    const isActive = pathname.startsWith(tab.href);
+                    
                     return (
                         <Link 
-                            key={idx} 
-                            href={item.href} 
-                            className={`flex flex-col items-center gap-1 transition-all duration-300 ${isActive ? 'opacity-100 scale-110' : 'opacity-40 hover:opacity-100'}`}
+                            key={tab.id} 
+                            href={tab.href}
+                            className="relative flex-1 flex flex-col items-center justify-center py-3 group no-tap-highlight"
                         >
-                            <Icon className={`w-5 h-5 ${item.color || 'text-txt'}`} />
-                            <span className={`text-[9px] font-black tracking-tighter ${item.color || 'text-txt'}`}>{item.label}</span>
                             {isActive && (
                                 <motion.div 
-                                    layoutId="nav-glow"
-                                    className="absolute -bottom-1 w-1 h-1 bg-gold rounded-full shadow-[0_0_10px_#F0C040]"
+                                    layoutId="navTab"
+                                    className="absolute inset-0 bg-white/[0.03] rounded-3xl border border-white/5"
+                                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                                />
+                            )}
+                            
+                            <div className="relative z-10 flex flex-col items-center gap-1">
+                                <tab.icon className={`w-5 h-5 transition-all duration-300 ${isActive ? 'text-gold scale-110 drop-shadow-[0_0_8px_rgba(242,196,65,0.4)]' : 'text-txt3 group-hover:text-txt2'}`} />
+                                <span className={`text-[8px] font-black tracking-[1.5px] uppercase transition-all ${isActive ? 'text-white' : 'text-txt3/60'}`}>
+                                    {tab.label}
+                                </span>
+                            </div>
+
+                            {isActive && (
+                                <motion.div 
+                                    layoutId="navDot"
+                                    className="absolute -bottom-1 w-1 h-1 bg-gold rounded-full shadow-[0_0_10px_#F2C441]"
                                 />
                             )}
                         </Link>
-                    )
+                    );
                 })}
-            </nav>
+            </div>
+            
+            <style jsx>{`
+                .no-tap-highlight {
+                    -webkit-tap-highlight-color: transparent;
+                }
+            `}</style>
         </div>
-    )
+    );
 }

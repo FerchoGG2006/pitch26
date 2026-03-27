@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react';
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
 type CardTier = 'LEGEND' | 'ELITE' | 'MOMENTO' | 'RISING' | 'BASE';
 
@@ -33,41 +33,36 @@ export interface PlayerCardType {
     };
 }
 
-const TIER_COLORS = {
-    LEGEND: { border: 'tb-gold', rating: '#FFD700', tag: 'pt-legend' },
-    ELITE: { border: 'tb-silver', rating: '#C0C0C0', tag: 'pt-elite' },
-    MOMENTO: { border: 'tb-purple', rating: '#9D6FFF', tag: 'pt-moment' },
-    RISING: { border: 'tb-teal', rating: '#00E5A0', tag: 'pt-rising' },
-    BASE: { border: 'tb-base', rating: '#7A8A9A', tag: 'pt-base' },
+const TIER_CONFIG = {
+    LEGEND: { color: '#F2C441', glow: 'rgba(242,196,65, 0.45)', tag: 'bg-gold text-black' },
+    ELITE: { color: '#C8C8C8', glow: 'rgba(200,200,200, 0.25)', tag: 'bg-white/20 text-white' },
+    MOMENTO: { color: '#A070FF', glow: 'rgba(160,112,255, 0.45)', tag: 'bg-purple text-white' },
+    RISING: { color: '#00DFA0', glow: 'rgba(0,223,160, 0.3)', tag: 'bg-emerald text-black' },
+    BASE: { color: '#8492A6', glow: 'rgba(255,255,255, 0.05)', tag: 'bg-white/10 text-white/40' },
 }
 
-export function PlayerCard({ card, onPress, isUpgrading }: { 
+export function PlayerCard({ card, onPress }: { 
     card: PlayerCardType; 
     onPress?: () => void;
-    isUpgrading?: boolean;
 }) {
-    // Fallbacks
-    const colors = TIER_COLORS[card.tier] || TIER_COLORS.BASE
+    const config = TIER_CONFIG[card.tier] || TIER_CONFIG.BASE
     const isLive = card.tier === 'MOMENTO' && !card.momento?.isExpired
-    const stats = card.stats || { rit: 0, tir: 0, vis: 0, dri: 0, pas: 0, fis: 0 }
-    const evolution = card.evolution || { deltaToday: 0, deltaTournament: 0, lastEvent: '-' }
+    const stats = card.stats
+    const evolution = card.evolution
 
-    // 3D Tilt Logic
     const x = useMotionValue(0)
     const y = useMotionValue(0)
     const mouseXSpring = useSpring(x)
     const mouseYSpring = useSpring(y)
-    const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['10deg', '-10deg'])
-    const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-10deg', '10deg'])
+    
+    // Smooth Tilt for Mobile Interaction
+    const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], [8, -8])
+    const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], [-8, 8])
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         const rect = e.currentTarget.getBoundingClientRect()
-        const width = rect.width
-        const height = rect.height
-        const mouseX = e.clientX - rect.left
-        const mouseY = e.clientY - rect.top
-        const xPct = mouseX / width - 0.5
-        const yPct = mouseY / height - 0.5
+        const xPct = (e.clientX - rect.left) / rect.width - 0.5
+        const yPct = (e.clientY - rect.top) / rect.height - 0.5
         x.set(xPct)
         y.set(yPct)
     }
@@ -79,7 +74,7 @@ export function PlayerCard({ card, onPress, isUpgrading }: {
 
     return (
         <motion.div
-            className="pcard shrink-0 relative"
+            className="relative select-none cursor-pointer group no-tap-highlight"
             onClick={onPress}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
@@ -87,103 +82,94 @@ export function PlayerCard({ card, onPress, isUpgrading }: {
                 rotateX, 
                 rotateY, 
                 transformStyle: 'preserve-3d',
-                userSelect: 'none' 
+                perspective: '1000px'
             }}
-            whileHover={{ scale: 1.02 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
         >
-            <div className="pcard-shine z-50 rounded-xl" />
-            
-            <AnimatePresence>
-                {isUpgrading && (
-                    <motion.div 
-                        initial={{ opacity: 0, scale: 0.5 }}
-                        animate={{ opacity: 1, scale: 1.2 }}
-                        exit={{ opacity: 0 }}
-                        className="absolute inset-x-0 -top-4 z-[60] flex flex-col items-center pointer-events-none"
-                    >
-                        <div className="bg-fire text-void text-[10px] font-black px-3 py-1 rounded-full shadow-lg shadow-fire/50 animate-bounce uppercase">
-                            ¡UPGRADE!
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {/* Mobile-Native Dimensions: 220x310px centered for 430px chassis */}
+            <div className="relative w-[220px] h-[310px] rounded-[1.8rem] bg-[#0A1422] overflow-hidden border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.6)] group-active:border-white/30 transition-all duration-300">
+                
+                {/* Advanced Glass Backdrop */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none" />
 
-            <div className={`pcard-inner ${colors.border}`}>
-                <div className="flex justify-between items-start mb-1">
-                    <div className="flex flex-col">
-                        <span className="pcard-rating text-3xl font-black" style={{ color: colors.rating }}>{card.rating}</span>
-                        <span className="pcard-pos text-[10px] font-bold opacity-70 uppercase tracking-tighter">{card.position}</span>
-                    </div>
-                    <div className="flex flex-col items-end">
-                        <span className="text-lg leading-none">{card.flag}</span>
-                        <div className={`mt-1 h-3 px-1 rounded-sm text-[8px] font-black flex items-center ${colors.tag} uppercase`}>
-                            {card.tier}
-                        </div>
-                    </div>
-                </div>
-
-                <div className="relative w-full aspect-[4/5] -mt-2 mb-1 overflow-hidden">
-                    {card.imageUrl && (
-                        <img 
-                            src={card.imageUrl} 
-                            alt={card.playerName}
-                            className="w-full h-full object-contain relative z-10 pcard-player-img" 
-                        />
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-panel/90 to-transparent z-0" />
+                {/* Content Layer (UI Oriented) */}
+                <div className="absolute inset-0 z-20 flex flex-col p-4">
                     
-                    {isLive && (
-                        <div className="absolute top-2 right-0 bg-fire text-void text-[7px] font-black px-1.5 py-0.5 rounded-l-md z-20 animate-pulse">
-                            ● VIVO
+                    {/* Header: Rating & Identity */}
+                    <div className="flex justify-between items-start mb-2">
+                        <div className="flex flex-col">
+                            <span className={`px-2 py-0.5 rounded-md text-[7px] font-black tracking-[1.5px] uppercase mb-1 shadow-sm ${config.tag}`}>
+                                {card.tier}
+                            </span>
+                            <div className="font-display font-black text-4xl italic leading-none" style={{ color: config.color }}>{card.rating}</div>
+                            <span className="text-[9px] font-black text-txt2 uppercase mt-1 tracking-tighter opacity-80">{card.position}</span>
                         </div>
-                    )}
+                        <div className="flex flex-col items-end">
+                            <span className="text-xl drop-shadow-md">{card.flag}</span>
+                            {isLive && (
+                                <div className="mt-2 bg-fire text-white text-[7px] font-black px-1.5 py-0.5 rounded-full animate-blink uppercase tracking-[1px] border border-fire/40">
+                                    LIVE
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Image Shield (Cinematic) - Mobile Balanced */}
+                    <div className="relative flex-1 -mt-2 mb-2">
+                        <div className="relative w-full h-full pcard-shield-v2 overflow-hidden">
+                             {card.imageUrl && (
+                                <img 
+                                    src={card.imageUrl} 
+                                    alt={card.playerName}
+                                    className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
+                                />
+                            )}
+                             <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#0A1422] via-[#0A1422]/70 to-transparent" />
+                        </div>
+                    </div>
+
+                    {/* Footer: Name & Dense Stats */}
+                    <div className="mt-auto">
+                        <h2 className="text-xl font-display font-black tracking-[1.5px] uppercase italic truncate mb-2 text-center border-b border-white/5 pb-1">
+                            {card.playerName}
+                        </h2>
+
+                        {/* Mobile Optimized Stats (3x2) */}
+                        <div className="grid grid-cols-3 gap-y-2 mb-2 px-1">
+                            {[
+                                { k: 'RIT', v: stats.rit }, { k: 'TIR', v: stats.tir }, { k: 'VIS', v: stats.vis },
+                                { k: 'DRI', v: stats.dri }, { k: 'PAS', v: stats.pas }, { k: 'FIS', v: stats.fis }
+                            ].map(s => (
+                                <div key={s.k} className="flex flex-col items-center">
+                                    <span className="text-[7px] font-black text-txt3 tracking-[1px] uppercase opacity-60">{s.k}</span>
+                                    <span className="text-[11px] font-black leading-none" style={{ color: config.color }}>{s.v}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Event Feed - Mobile Rail */}
+                        <div className="flex items-center justify-between text-[8px] font-bold px-3 py-1.5 bg-white/[0.04] rounded-lg border border-white/5">
+                            <span className="text-txt2 uppercase truncate max-w-[100px] tracking-tight">{evolution.lastEvent}</span>
+                            <span className={evolution.deltaToday >= 0 ? 'text-emerald' : 'text-fire'}>
+                                {evolution.deltaToday >= 0 ? `▲+${evolution.deltaToday}` : `▼${evolution.deltaToday}`}
+                            </span>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="text-center mb-2 px-1">
-                    <h3 className="text-base font-display font-black tracking-tighter uppercase italic truncate leading-none">
-                        {card.playerName}
-                    </h3>
-                </div>
-
-                <div className="grid grid-cols-3 gap-y-1 gap-x-2 border-t border-rim/30 pt-2 mb-2">
-                    <div className="flex flex-col items-center">
-                        <span className="text-[7px] opacity-40 font-bold tracking-tighter">RIT</span>
-                        <span className="text-[10px] font-black">{stats.rit}</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <span className="text-[7px] opacity-40 font-bold tracking-tighter">TIR</span>
-                        <span className="text-[10px] font-black">{stats.tir}</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <span className="text-[7px] opacity-40 font-bold tracking-tighter">VIS</span>
-                        <span className="text-[10px] font-black">{stats.vis}</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <span className="text-[7px] opacity-40 font-bold tracking-tighter">DRI</span>
-                        <span className="text-[10px] font-black">{stats.dri}</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <span className="text-[7px] opacity-40 font-bold tracking-tighter">PAS</span>
-                        <span className="text-[10px] font-black">{stats.pas}</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <span className="text-[7px] opacity-40 font-bold tracking-tighter">FIS</span>
-                        <span className="text-[10px] font-black">{stats.fis}</span>
-                    </div>
-                </div>
-
-                <div className="mt-auto px-1 py-1 bg-void/30 rounded border border-rim/20">
-                    <div className="flex items-center justify-between gap-1 overflow-hidden">
-                        <span className={`text-[8px] font-bold truncate uppercase ${isLive ? 'text-fire' : 'text-txt2'}`}>
-                            {evolution.lastEvent}
-                        </span>
-                        <span className={`text-[8px] font-black shrink-0 ${evolution.deltaToday > 0 ? 'text-emerald' : 'text-txt2'}`}>
-                            {evolution.deltaToday >= 0 ? `+${evolution.deltaToday}` : evolution.deltaToday}
-                        </span>
-                    </div>
-                </div>
+                {/* Refined Holographic Glare */}
+                <div className="absolute inset-0 z-30 pointer-events-none opacity-0 group-hover:opacity-20 transition-opacity duration-500 bg-gradient-to-tr from-transparent via-white/30 to-transparent" />
             </div>
+
+            <style jsx>{`
+                .pcard-shield-v2 {
+                    clip-path: polygon(0 0, 100% 0, 100% 88%, 50% 100%, 0 88%);
+                }
+                .no-tap-highlight {
+                    -webkit-tap-highlight-color: transparent;
+                }
+            `}</style>
         </motion.div>
     );
 }
